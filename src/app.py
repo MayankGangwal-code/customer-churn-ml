@@ -39,7 +39,6 @@ payment_method = st.selectbox(
 # -------------------------------
 if st.button("Predict"):
 
-    # Create raw input (same format as dataset)
     input_dict = {
         "gender": gender,
         "SeniorCitizen": senior,
@@ -62,25 +61,25 @@ if st.button("Predict"):
         "TotalCharges": total_charges
     }
 
-    # Convert to DataFrame
     input_df = pd.DataFrame([input_dict])
 
-    try:
-        # Apply SAME preprocessing as training
-        processed_df = preprocess_data(input_df)
+    # Preprocess
+    processed_df = preprocess_data(input_df)
 
-        # Remove target column if exists
-        if "Churn" in processed_df.columns:
-            processed_df = processed_df.drop("Churn", axis=1)
+    # 🔥 VERY IMPORTANT FIX (align columns)
+    model_features = model.feature_names_in_
 
-        # Predict
-        prediction = model.predict(processed_df)
+    for col in model_features:
+        if col not in processed_df.columns:
+            processed_df[col] = 0
 
-        # Output
-        if prediction[0] == 1:
-            st.error("Customer will churn ❌")
-        else:
-            st.success("Customer will not churn ✅")
+    # Ensure same column order
+    processed_df = processed_df[model_features]
 
-    except Exception as e:
-        st.error(f"Error: {e}")
+    # Predict
+    prediction = model.predict(processed_df)
+
+    if prediction[0] == 1:
+        st.error("Customer will churn ❌")
+    else:
+        st.success("Customer will not churn ✅")
