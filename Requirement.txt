@@ -1,6 +1,0 @@
-1. pandas
-2. numpy
-3. sckilt-learn
-4. matplotlib
-5. seaborn
-6. joblib
