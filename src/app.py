@@ -2,8 +2,7 @@ import streamlit as st
 import pandas as pd
 import pickle
 
-# Load model
-model = pickle.load(open("model/model.pkl", "rb"))
+model = pickle.load(open("../model/model.pkl", "rb"))
 
 st.title("Customer Churn Prediction")
 
